@@ -1,4 +1,4 @@
-DATACENTER SCALE COMPUTING ASSIGNMENTS
+## Datacenter-Scale-Computing-Assignments
 
 These assignments were explicitly done using the Google Cloud Platform during the course CSCI 5253 : Datacenter Scale Computing.
 
