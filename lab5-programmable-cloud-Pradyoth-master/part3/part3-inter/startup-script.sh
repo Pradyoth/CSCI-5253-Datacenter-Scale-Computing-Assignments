@@ -1,0 +1,30 @@
+#!/bin/bash
+
+apt-get update
+apt-get -y install imagemagick
+
+IMAGE_URL=$(curl http://metadata/computeMetadata/v1/instance/attributes/url -H "Metadata-Flavor: Google")
+TEXT=$(curl http://metadata/computeMetadata/v1/instance/attributes/text -H "Metadata-Flavor: Google")
+CS_BUCKET=$(curl http://metadata/computeMetadata/v1/instance/attributes/bucket -H "Metadata-Flavor: Google")
+
+mkdir image-output
+cd image-output
+wget $IMAGE_URL
+convert * -pointsize 30 -fill white -stroke black -gravity center -annotate +10+40 "$TEXT" output.png
+
+gsutil mb gs://$CS_BUCKET
+
+gsutil cp -a public-read output.png gs://$CS_BUCKET/output.png
+
+sudo apt-get update
+sudo apt-get install -y python3 python3-pip git
+cd ~/
+git clone https://github.com/pallets/flask.git
+cd ~/flask/examples/tutorial
+sudo python3 setup.py install
+sudo pip3 install -e .
+
+
+export FLASK_APP=flaskr
+flask init-db
+nohup flask run -h 0.0.0.0 &
